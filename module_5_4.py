@@ -1,89 +1,53 @@
-'''class Example:
-    houses_history = [1]
-
-    def __new__(cls, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        return super().__new__(cls)
-
-    def __init__(self, one, two, thri):
-        print(one)
-        print(two)
-        print(thri)
-
-ex = Example('data', two=25, thri=3.14)
-print(Example.houses_history)'''
+# Задача "История строительства":
+# Для решения этой задачи будем пользоваться решением к предыдущей задаче "Перегрузка операторов".
+#
+# В классе House создайте атрибут houses_history = [], который будет хранить названия созданных объектов.
+#
+# Правильней вписывать здание в историю сразу при создании объекта, тем более можно удобно обращаться к атрибутам класса используя ссылку на сам класс - cls.
+# Дополните метод __new__ так, чтобы:
+# Название объекта добавлялось в список cls.houses_history.
+# Название строения можно взять из args по индексу.
+#
+# Также переопределите метод __del__(self) в котором будет выводиться строка:
+# "<название> снесён, но он останется в истории"
+#
+# Создайте несколько объектов класса House и проверьте работу методов __del__ и __new__, а также значение атрибута houses_history.
+#
+# Пример результата выполнения программы:
+# Пример выполнения программы:
+# h1 = House('ЖК Эльбрус', 10)
+# print(House.houses_history)
+# h2 = House('ЖК Акация', 20)
+# print(House.houses_history)
+# h3 = House('ЖК Матрёшки', 20)
+# print(House.houses_history)
+#
+# # Удаление объектов
+# del h2
+# del h3
+#
+# print(House.houses_history)
+#
+# Вывод на консоль:
+# ['ЖК Эльбрус']
+# ['ЖК Эльбрус', 'ЖК Акация']
+# ['ЖК Эльбрус', 'ЖК Акация', 'ЖК Матрёшки']
+# ЖК Акация снесён, но он останется в истории
+# ЖК Матрёшки снесён, но он останется в истории
+# ['ЖК Эльбрус', 'ЖК Акация', 'ЖК Матрёшки']
+# ЖК Эльбрус снесён, но он останется в истории
 
 class House():
     houses_history = []
 
     def __new__(cls, *args):
         #print(args)
+        House.houses_history.append(args[0])
         return super().__new__(cls)
 
     def __init__(self, name, number_of_floors):
         self.name = name
         self.floors = number_of_floors
-        House.houses_history.append(self.name)
-
-    def go_to(self, new_floor):
-        if new_floor < 1 or new_floor > self.floors:
-            print("Такого этажа не существует",'\n')
-        else:
-            for i in range(1, new_floor + 1):
-                print(i)
-            print("Приехали",'\n')
-
-    def __str__(self):
-        return f'Название: {self.name}, кол-во этажей: {self.floors}'
-
-    def __len__(self):
-        return self.floors
-
-    def __eq__(self, other):
-        if isinstance(other, House) and isinstance(other.floors,int):
-            return self.floors == other.floors
-        return False
-
-    def __add__(self, other):
-        if isinstance(other, int):
-            return House(self.name, self.floors + other) #такое решение, а если много параметров?
-        return False
-
-    def __iadd__(self, other):
-        if isinstance(other, int):
-            return House(self.name, self.floors + other)
-        return False
-
-    def __radd__(self, other):
-        if isinstance(other, int):
-            return House(self.name, self.floors + other)
-        return False
-
-    def __gt__(self, other):#(>)
-        if isinstance(other, int):
-            return self.floors > other.floors
-        return False
-
-    def __ge__(self, other):#(>=)
-        if isinstance(other, House) and isinstance(other.floors,int):
-            return self.floors >= other.floors
-        return False
-
-    def __lt__(self, other):#(<)
-        if isinstance(other, House) and isinstance(other.floors,int):
-            return self.floors < other.floors
-        return False
-
-    def __le__(self, other): #(<=)
-        if isinstance(other, House) and isinstance(other.floors,int):
-            return self.floors <= other.floors
-        return False
-
-    def __ne__(self, other): #(!=)
-        if isinstance(other, House) and isinstance(other.floors,int):
-            return self.floors != other.floors
-        return False
 
     def __del__(self):
         print(f'{self.name} снесён, но он останется в истории')
